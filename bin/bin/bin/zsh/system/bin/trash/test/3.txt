@@ -1,0 +1,69 @@
+// Write a C program which display the information of a given file similar to given by the unix /linux command on current directory (l.e File Access permission, file name, file type, User id, group id, file size, file access and modified time and so on)
+// ls –l <filename>
+// DO NOT simply exec ls -l <filename> or system command from the program.
+
+   
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <pwd.h>
+#include <grp.h>
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
+        return 1;
+    }
+
+    struct stat fileStat;
+    if (stat(argv[1], &fileStat) == -1) {
+        perror("stat");
+        return 1;
+    }
+
+    printf("File: %s\n", argv[1]);
+    printf("File type: ");
+    if (S_ISREG(fileStat.st_mode))
+        printf("Regular File\n");
+    else if (S_ISDIR(fileStat.st_mode))
+        printf("Directory\n");
+    else if (S_ISLNK(fileStat.st_mode))
+        printf("Symbolic Link\n");
+    else if (S_ISFIFO(fileStat.st_mode))
+        printf("FIFO/Named Pipe\n");
+    else if (S_ISSOCK(fileStat.st_mode))
+        printf("Socket\n");
+    else if (S_ISCHR(fileStat.st_mode))
+        printf("Character Device\n");
+    else if (S_ISBLK(fileStat.st_mode))
+        printf("Block Device\n");
+    else
+        printf("Unknown\n");
+
+    printf("File permissions: ");
+    printf((fileStat.st_mode & S_IRUSR) ? "r" : "-");
+    printf((fileStat.st_mode & S_IWUSR) ? "w" : "-");
+    printf((fileStat.st_mode & S_IXUSR) ? "x" : "-");
+    printf((fileStat.st_mode & S_IRGRP) ? "r" : "-");
+    printf((fileStat.st_mode & S_IWGRP) ? "w" : "-");
+    printf((fileStat.st_mode & S_IXGRP) ? "x" : "-");
+    printf((fileStat.st_mode & S_IROTH) ? "r" : "-");
+    printf((fileStat.st_mode & S_IWOTH) ? "w" : "-");
+    printf((fileStat.st_mode & S_IXOTH) ? "x\n" : "-\n");
+
+    printf("User ID: %d\n", fileStat.st_uid);
+    printf("Group ID: %d\n", fileStat.st_gid);
+    printf("File size: %lld bytes\n", (long long) fileStat.st_size);
+
+    char timeBuffer[80];
+    strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", localtime(&fileStat.st_atime));
+    printf("Last Access Time: %s\n", timeBuffer);
+    strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", localtime(&fileStat.st_mtime));
+    printf("Last Modification Time: %s\n", timeBuffer);
+
+    return 0;
+}

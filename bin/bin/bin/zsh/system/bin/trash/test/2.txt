@@ -1,0 +1,37 @@
+// Write a C program to create a file with hole in it.
+
+
+
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main() {
+    int fd = open("file_with_hole.txt", O_WRONLY | O_CREAT, 0666);
+    write(fd, "This is some text.", 18);
+    lseek(fd, 1000000, SEEK_CUR);
+    write(fd, "This is some text.", 18);
+    close(fd);
+    return 0;
+}
+
+
+
+
+
+// other
+#include <fcntl.h>
+#include <unistd.h>
+#include <linux/falloc.h>
+
+int main() {
+    int fd = open("file_with_hole.txt", O_WRONLY | O_CREAT, 0666);
+    write(fd, "This is some text.", 18);
+    lseek(fd, 1000000, SEEK_CUR);
+    fallocate(fd, 0, 0, 1000000);
+    write(fd, "This is some text.", 18);
+    close(fd);
+    return 0;
+}
+

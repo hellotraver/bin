@@ -1,0 +1,53 @@
+// Write a Swift program to change the first and last character of a given string
+
+
+// Most better 
+
+
+func exchangeCharacters(_ enteredString: String) -> String {
+    var str = enteredString;
+    let firstCharacter = String(str.removeFirst());
+    let lastCharacter = String(str.removeLast());
+    return lastCharacter + str + firstCharacter;
+}
+
+print(exchangeCharacters("Jfddfob"));
+
+
+// Better & Correct
+
+func exchangeCh(_ typeWord:String)-> String{
+    var str = typeWord
+    // Get first and last character
+    let firstCharacter = String(str.prefix(1))
+    let LastCharacter = String(str.suffix(1))
+    // Remove first and last characters
+    str.removeFirst()
+    str.removeLast()
+    return LastCharacter + str + firstCharacter
+}
+print(exchangeCh(“Hello”))
+
+
+
+
+
+
+
+
+
+func changeFirstAndLastCharacter(_ input: String) -> String {
+    var output = input
+    if let first = input.first, let last = input.last {
+        output.removeFirst()
+        output.removeLast()
+        output.insert(last, at: output.startIndex)
+        output.insert(first, at: output.endIndex)
+    }
+    return output
+}
+
+// Example usage
+let inputString = "example"
+let outputString = changeFirstAndLastCharacter(inputString)
+print(outputString) // "elpmaxe"

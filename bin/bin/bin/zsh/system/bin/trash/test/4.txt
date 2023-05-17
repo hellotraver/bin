@@ -1,0 +1,205 @@
+// UI
+
+
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+       <TextView
+           android:text="Enter Item:"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:textStyle="bold"
+           android:textSize="16sp"
+           android:layout_marginBottom="100px"
+           android:layout_marginTop="100px"
+           />
+
+       <EditText
+           android:id="@+id/item_edittext"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginLeft="50px"
+           android:layout_marginBottom="100px"
+           android:layout_marginTop="100px"
+           android:hint="Apple"/>
+   </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="100px"
+        >
+
+        <Button
+            android:id="@+id/add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add to Spinner"/>
+
+        <Button
+            android:id="@+id/remove_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30px"
+            android:text="Remove from Spinner"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:text="See Response Below:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"/>
+
+    <Spinner
+        android:id="@+id/fruit_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/fruits"
+        android:prompt="@string/select_fruit"
+        android:spinnerMode="dropdown"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:text=""
+        android:id="@+id/display_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="100px"
+        android:layout_marginTop="100px"
+        />
+
+
+
+</LinearLayout>
+
+
+
+
+
+
+// Logic
+
+
+package com.example.spinnerjava;//package com.example.spinnerjava;
+//
+//import androidx.appcompat.app.AppCompatActivity;
+//
+//import android.os.Bundle;
+//
+//public class MainActivity extends AppCompatActivity {
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
+//    }
+//}
+
+
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.example.spinnerjava.*;
+import com.example.spinnerjava.R;
+
+public class MainActivity extends Activity {
+
+    private EditText itemEditText;
+    private Button addButton;
+    private Button removeButton;
+    private Spinner spinner;
+    private TextView responseTextView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize views
+        itemEditText = findViewById(R.id.item_edittext);
+        addButton = findViewById(R.id.add_button);
+        removeButton = findViewById(R.id.remove_button);
+        spinner = findViewById(R.id.fruit_spinner);
+        responseTextView = findViewById(R.id.display_message);
+
+        // Set up the spinner
+        List<String> fruitsList = new ArrayList<>();
+        fruitsList.add("Apple");
+        fruitsList.add("Banana");
+        fruitsList.add("Cherry");
+        fruitsList.add("Orange");
+        fruitsList.add("Pineapple");
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, fruitsList);
+        spinner.setAdapter(spinnerAdapter);
+
+        // Add button click listener
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newItem = itemEditText.getText().toString();
+                if (!newItem.isEmpty()) {
+                    spinnerAdapter.add(newItem);
+                    spinnerAdapter.notifyDataSetChanged();
+                    itemEditText.setText("");
+                    responseTextView.setText("Item added to spinner: " + newItem);
+                }
+            }
+        });
+
+        // Remove button click listener
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String selectedItem = (String) spinner.getSelectedItem();
+                if (selectedItem != null) {
+                    spinnerAdapter.remove(selectedItem);
+                    spinnerAdapter.notifyDataSetChanged();
+                    responseTextView.setText("Item removed from spinner: " + selectedItem);
+                }
+            }
+        });
+    }
+}
+
+
+
+// static data main/res/values/strings.xml
+
+<resources>
+    <string name="app_name">SpinnerJava</string>
+    <string name="select_fruit">Select a fruit</string>
+
+    <string-array name="fruits">
+        <item>Apple</item>
+        <item>Banana</item>
+        <item>Cherry</item>
+        <item>Orange</item>
+        <item>Pineapple</item>
+    </string-array>
+</resources>
